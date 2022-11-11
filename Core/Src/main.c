@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "display_ssd1963.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -88,6 +88,21 @@ int main(void)
   MX_GPIO_Init();
   MX_FMC_Init();
   /* USER CODE BEGIN 2 */
+
+  HAL_GPIO_WritePin(DisplayReset_GPIO_Port, DisplayReset_Pin, GPIO_PIN_RESET);
+  HAL_Delay(500);
+  HAL_GPIO_WritePin(DisplayReset_GPIO_Port, DisplayReset_Pin, GPIO_PIN_SET);
+  HAL_Delay(100);
+
+  Init_SSD1963();
+  for(uint32_t index_clr=0;index_clr < 800*480;index_clr++){
+    Lcd_Write_Data(BLACK); 	//setbuf color pixel
+ 	}
+  Lcd_ClearScreen(WHITE);
+  for(uint32_t index_set=0;index_set < 400;index_set++){
+    Lcd_SetPixel(index_set, index_set, GREEN);
+  }
+  TFT_Draw_Circle(100, 100, 20, 1, 1, RED);
 
   /* USER CODE END 2 */
 
@@ -218,10 +233,21 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(DisplayReset_GPIO_Port, DisplayReset_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : DisplayReset_Pin */
+  GPIO_InitStruct.Pin = DisplayReset_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(DisplayReset_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : UserButton_Pin */
   GPIO_InitStruct.Pin = UserButton_Pin;
