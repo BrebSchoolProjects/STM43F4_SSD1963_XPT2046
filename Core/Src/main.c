@@ -53,7 +53,13 @@ const osThreadAttr_t defaultTask_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
-
+/* Definitions for GUI_Task */
+osThreadId_t GUI_TaskHandle;
+const osThreadAttr_t GUI_Task_attributes = {
+  .name = "GUI_Task",
+  .stack_size = 8192 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -69,6 +75,9 @@ void StartDefaultTask(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_Delay(uint32_t Delay) {
+	vTaskDelay(Delay / portTICK_PERIOD_MS);
+}
 
 /* USER CODE END 0 */
 
@@ -108,9 +117,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_GPIO_WritePin(DisplayReset_GPIO_Port, DisplayReset_Pin, GPIO_PIN_RESET);
-  HAL_Delay(500);
+  vTaskDelay(500 / portTICK_PERIOD_MS);
   HAL_GPIO_WritePin(DisplayReset_GPIO_Port, DisplayReset_Pin, GPIO_PIN_SET);
-  HAL_Delay(100);
+  vTaskDelay(500 / portTICK_PERIOD_MS);
 
   Init_SSD1963();
   for(uint32_t index_clr=0;index_clr < 800*480;index_clr++){
@@ -148,7 +157,8 @@ int main(void)
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
+  /* creation of GUI_Task */
+    GUI_TaskHandle = osThreadNew(TouchGFX_Task, NULL, &GUI_Task_attributes);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -351,9 +361,14 @@ void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
+	int x = 0;
   for(;;)
   {
-    osDelay(1);
+    osDelay(100 / portTICK_PERIOD_MS);
+    touchgfxSignalVSync();
+
+    TFT_Draw_Circle(x, x, 20, 1, 1, RED);
+    x++;
   }
   /* USER CODE END 5 */
 }
