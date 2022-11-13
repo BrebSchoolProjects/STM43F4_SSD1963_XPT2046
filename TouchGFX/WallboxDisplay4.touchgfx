@@ -3,7 +3,68 @@
     "Screens": [
       {
         "Name": "screen",
-        "Components": [],
+        "CanvasBufferSize": 12000,
+        "Components": [
+          {
+            "Type": "Button",
+            "Name": "button1",
+            "X": 100,
+            "Y": 83,
+            "Width": 170,
+            "Height": 60,
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_small_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_small.png",
+            "Style": "Style4"
+          },
+          {
+            "Type": "Circle",
+            "Name": "circle1",
+            "X": 111,
+            "Y": 174,
+            "Width": 80,
+            "Height": 80,
+            "Color": {
+              "Red": 255
+            },
+            "CenterX": 40.0,
+            "CenterY": 40.0,
+            "Radius": 40.0,
+            "EndAngle": 360.0,
+            "CapPrecision": "Butt"
+          },
+          {
+            "Type": "Circle",
+            "Name": "circle1_1",
+            "X": 213,
+            "Y": 174,
+            "Width": 80,
+            "Height": 80,
+            "Color": {
+              "Green": 255
+            },
+            "CenterX": 40.0,
+            "CenterY": 40.0,
+            "Radius": 40.0,
+            "EndAngle": 360.0,
+            "CapPrecision": "Butt"
+          },
+          {
+            "Type": "Circle",
+            "Name": "circle1_2",
+            "X": 308,
+            "Y": 174,
+            "Width": 80,
+            "Height": 80,
+            "Color": {
+              "Blue": 255
+            },
+            "CenterX": 40.0,
+            "CenterY": 40.0,
+            "Radius": 40.0,
+            "EndAngle": 360.0,
+            "CapPrecision": "Butt"
+          }
+        ],
         "Interactions": []
       }
     ],
@@ -15,10 +76,16 @@
     },
     "SelectedColorDepth": 16,
     "StartupScreenName": "screen",
+    "SelectedStartupLanguage": "GB",
     "Skin": "Blue",
-    "TouchGfxPath": "touchgfx",
+    "TouchGfxPath": "../Middlewares/ST/touchgfx",
     "UIPath": ".",
-    "AvailableColorDepths": [],
+    "AvailableColorDepths": [
+      16
+    ],
+    "AvailableLCDs": {
+      "16": "LCD16bpp"
+    },
     "AvailableSections": [
       "ExtFlashSection",
       "IntFlashSection"
@@ -30,15 +97,27 @@
       }
     ],
     "PhysicalButtons": [],
+    "FrameworkFeatures": {
+      "LCD16bpp": {
+        "Id": "LCD16bpp",
+        "IsEnabled": true
+      }
+    },
     "GenerateAssetsCommand": "make -f simulator/gcc/Makefile assets -j8",
     "PostGenerateCommand": "touchgfx update_project --project-file=simulator/msvs/Application.vcxproj",
+    "PostGenerateTargetCommand": "touchgfx update_project",
     "CompileSimulatorCommand": "make -f simulator/gcc/Makefile -j8",
     "RunSimulatorCommand": "build\\bin\\simulator.exe",
     "LandscapeSkinX": 0,
     "LandscapeSkinY": 0,
     "PortraitSkinX": 0,
     "PortraitSkinY": 0,
-    "DisplayOrientation": "Landscape"
+    "DisplayOrientation": "Landscape",
+    "Family": "STM32F4",
+    "Platform": "m4",
+    "ProjectFile": "../WallboxDisplay4.ioc",
+    "OptionalComponentsRoot": "../Middlewares/ST/touchgfx_components",
+    "OptionalComponents": []
   },
   "Version": "4.20.0"
 }
