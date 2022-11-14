@@ -116,6 +116,8 @@ int main(void)
   MX_TouchGFX_PreOSInit();
   /* USER CODE BEGIN 2 */
 
+  setupDefaultGpios();
+
   HAL_GPIO_WritePin(DisplayReset_GPIO_Port, DisplayReset_Pin, GPIO_PIN_RESET);
   vTaskDelay(500 / portTICK_PERIOD_MS);
   HAL_GPIO_WritePin(DisplayReset_GPIO_Port, DisplayReset_Pin, GPIO_PIN_SET);
@@ -123,13 +125,17 @@ int main(void)
 
   Init_SSD1963();
   for(uint32_t index_clr=0;index_clr < 800*480;index_clr++){
-    Lcd_Write_Data(BLACK); 	//setbuf color pixel
+    Lcd_Write_Data(DARK_BLUE); 	//setbuf color pixel
  	}
-  Lcd_ClearScreen(WHITE);
+  Lcd_ClearScreen(DARK_BLUE);
   for(uint32_t index_set=0;index_set < 400;index_set++){
     Lcd_SetPixel(index_set, index_set, GREEN);
   }
-  TFT_Draw_Circle(100, 100, 20, 1, 1, RED);
+  TFT_Draw_Circle(600, 100, 20, 1, 1, RED);
+  TFT_Draw_Circle(600, 150, 20, 1, 1, GREEN);
+  TFT_Draw_Circle(600, 200, 20, 1, 1, BLUE);
+  TFT_Draw_Circle(650, 100, 20, 1, 1, WHITE);
+  while(1);
 
   /* USER CODE END 2 */
 

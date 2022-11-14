@@ -144,7 +144,7 @@ Lcd_Write_Data(0x01);//SET end page address=479
 Lcd_Write_Data(0xdf);  //1f
 
 Lcd_Write_Cmd(0x036);  //SET RGB BGR
-Lcd_Write_Data(0x08);  //1 BGR  0  RGB
+Lcd_Write_Data(0x00);  //1 BGR  0  RGB
 //Lcd_Write_Cmd(0x36);;     //SET address mode to rotate mode
 //Lcd_Write_Data(0x60);
 //Lcd_Write_Cmd(0x3a);  //Reserved command ???????????
