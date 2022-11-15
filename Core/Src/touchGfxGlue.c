@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 
-#include "display_ssd1963.h"
+#include "SSD1963.h"
 
 void touchgfxSignalVSync(void);
 
@@ -20,7 +20,7 @@ void touchgfxDisplayDriverTransmitBlock(const uint8_t* pixels, uint16_t x, uint1
 	for (int j = y; j < y+h; j++) {
 		for (int i = x; i < x+w; i++) {
 			//uint16_t data = *pixels | (*(pixels+1) << 8);
-			Lcd_SetPixel(i, j, *data);
+			LCD_PutPixel(i, j, *data);
 			data++;
 
 		}
