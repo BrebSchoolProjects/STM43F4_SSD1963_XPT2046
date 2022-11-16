@@ -127,27 +127,27 @@ int main(void)
 
   LCD_ResetDevice();
   LCD_Clear(BLACK);
-  LCD_Line(0, 0, 200, 200, YELLOW);
-  LCD_Circle(600, 100, 20, BRIGHTRED, true);
-  LCD_Circle(600, 150, 20, BRIGHTGREEN, true);
-  LCD_Circle(600, 200, 20, BRIGHTBLUE, true);
-  LCD_Circle(650, 100, 20, WHITE, true);
-  LCD_PutChar(500, 100, 'c', BRIGHTYELLOW, BLACK);
-  LCD_Text(200, 50, "Hello World!", 12, BRIGHTCYAN, BLACK);
-
-  uint16_t imag[10000];
-  for (int i = 0; i < 10000; i++) {
-	  if (i < 2000)
-		  imag[i] = WHITE;
-	  else if (i < 4000)
-		  imag[i] = BRIGHTRED;
-	  else if (i < 6000)
-		  imag[i] = BRIGHTGREEN;
-	  else
-		  imag[i] = BRIGHTBLUE;
-  }
-  LCD_DispPicSize(100, 250, 100, 100, (uint8_t *)imag);
-
+//  LCD_Line(0, 0, 200, 200, YELLOW);
+//  LCD_Circle(600, 100, 20, BRIGHTRED, true);
+//  LCD_Circle(600, 150, 20, BRIGHTGREEN, true);
+//  LCD_Circle(600, 200, 20, BRIGHTBLUE, true);
+//  LCD_Circle(650, 100, 20, WHITE, true);
+//  LCD_PutChar(500, 100, 'c', BRIGHTYELLOW, BLACK);
+//  LCD_Text(200, 50, "Hello World!", 12, BRIGHTCYAN, BLACK);
+//
+//  uint16_t imag[10000];
+//  for (int i = 0; i < 10000; i++) {
+//	  if (i < 2000)
+//		  imag[i] = WHITE;
+//	  else if (i < 4000)
+//		  imag[i] = BRIGHTRED;
+//	  else if (i < 6000)
+//		  imag[i] = BRIGHTGREEN;
+//	  else
+//		  imag[i] = BRIGHTBLUE;
+//  }
+//  LCD_DispPicSize(100, 250, 100, 100, (uint8_t *)imag);
+//
 //  while (1) {
 //
 //  HAL_Delay(1000);
