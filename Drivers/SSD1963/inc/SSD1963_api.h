@@ -77,6 +77,7 @@ typedef union
   u8 U8[2];
 } ColorTypeDef;
 
+void LCD_PutChar(u16 x, u16 y, u8 Character, u16 ForeColor, u16 BackColor);
 void LCD_Text(u16 x, u16 y, u8 *str, u16 len,u16 Color, u16 bkColor);
 void LCD_Line(u16 x0, u16 y0, u16 x1, u16 y1,u16 color);
 void LCD_Circle(u16 cx,u16 cy,u16 r,u16 color,u8 fill); 

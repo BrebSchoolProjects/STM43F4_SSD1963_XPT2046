@@ -500,6 +500,11 @@ void LCD_ResetDevice(void)
 //	LCD_WriteData(0x55); 				// set 16bpp
 //	Set_Cs;
 
+	// flip image vertically
+	LCD_WriteCommand(CMD_SET_ADDR_MODE);
+	LCD_WriteData(0x02);	// flip image
+	Clr_Cs;
+
 	//Set pixel data interface
 	LCD_WriteCommand(0xF0);
 	Clr_Cs;

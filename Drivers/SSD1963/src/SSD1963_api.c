@@ -6,6 +6,8 @@
 #include "SSD1963_api.h"
 #include "SSD1963_font.h"
 
+#include <math.h>
+
 void LCD_Line(u16 x0, u16 y0, u16 x1, u16 y1,u16 color)
 {
  	u16 x,y;
@@ -318,9 +320,8 @@ void LCD_DispPic(u16 x0, u16 y0, const unsigned char *str)
 {
     u16 imageWidth;
     u16 imageHeight;
-    
     ColorTypeDef color;
-    
+
     color.U8[1] =*(unsigned short *)(&str[ 0]);
 	color.U8[0]=*(unsigned short *)(&str[ 1]);
     imageWidth = color.U16;
@@ -333,10 +334,8 @@ void LCD_DispPic(u16 x0, u16 y0, const unsigned char *str)
 }
 
 void LCD_DispPicSize(u16 x0, u16 y0, u16 width, u16 height, const unsigned char *str) {
-	u32 temp;
     u16 x1;
     u16 y1;
-    ColorTypeDef color;
 
     x1 = width-1 + x0;
     y1 = height-1 + y0;
@@ -346,13 +345,9 @@ void LCD_DispPicSize(u16 x0, u16 y0, u16 width, u16 height, const unsigned char 
 
 	Clr_Cs;    
 
-	for (temp = 2; temp < (width*height)+2; temp++)
-	{  
-		color.U8[1] =*(unsigned short *)(&str[ 2 * temp]);
-		color.U8[0]=*(unsigned short *)(&str[ 2 * temp+1]);
-		//DataToWrite(i);
-	
-		LCD_WriteData(color.U16);
+	for (uint16_t *c = (uint16_t *)str; c < (uint16_t *)(str + (width * height) * 2); c++) {
+		LCD_WriteData(*c);
+
 	}
     Set_Cs;
 
@@ -386,7 +381,7 @@ void LCD_PutChar(u16 x, u16 y, u8 Character, u16 ForeColor, u16 BackColor)
 
                     if (row > 0 && row < 8)
                     {
-                        if ((MyFont[2 * column + 1 + 3+offset] & (power(2, row))) > 0)  // Math.Pow = ^ (opl�ftet i)
+                        if ((MyFont[2 * column + 1 + 3+offset] & (int)(pow(2, row))) > 0)  // Math.Pow = ^ (opl�ftet i)
                         {
                             LCD_WriteData(ForeColor);
                         } else {
@@ -406,7 +401,7 @@ void LCD_PutChar(u16 x, u16 y, u8 Character, u16 ForeColor, u16 BackColor)
 
                     if (row > 8 && row < 16)
                     {
-                        if ((MyFont[2 * column + 2 + 3+offset] & (power(2, (row - 8)))) > 0)  // Math.Pow = ^ (opl�ftet i)
+                        if ((MyFont[2 * column + 2 + 3+offset] & (int)(pow(2, (row - 8)))) > 0)  // Math.Pow = ^ (opl�ftet i)
                         {
                             LCD_WriteData(ForeColor);
                         } else {
