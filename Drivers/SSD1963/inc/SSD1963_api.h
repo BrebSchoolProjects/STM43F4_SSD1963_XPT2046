@@ -86,6 +86,7 @@ void LCD_ClearCharBox(u16 x,u16 y,u16 color);
 
 void LCD_DispPic_FullSize(const unsigned char *str);
 void LCD_DispPic(u16 x0, u16 y0, const unsigned char *str);
+void LCD_DispPicSize(u16 x0, u16 y0, u16 width, u16 height, const unsigned char *str);
 
 
 

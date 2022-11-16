@@ -18,8 +18,8 @@
  * Microchip licenses to you the right to use, modify, copy, and 
  * distribute: 
  * (i)  the Software when embedded on a Microchip microcontroller or 
- *      digital signal controller product (“Device? which is 
- *      integrated into Licensee’s product; or
+ *      digital signal controller product (ï¿½Device? which is 
+ *      integrated into Licenseeï¿½s product; or
  * (ii) ONLY the Software driver source files ENC28J60.c and 
  *      ENC28J60.h ported to a non-Microchip device used in 
  *      conjunction with a Microchip ethernet controller for the 
@@ -29,7 +29,7 @@
  * Software for additional information regarding your rights and 
  * obligations.
  *
- * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED “AS IS?WITHOUT 
+ * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED ï¿½AS IS?WITHOUT 
  * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT 
  * LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A 
  * PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL 
@@ -78,7 +78,8 @@
 #define STM32_STAMP // STM32F103RET6
 #define DISPLAY_CONTROLLER SSD1963
 //Define TFT panel here
-#define DISPLAY_PANEL TY700TFT800480
+#define DISPLAY_PANEL_TY700TFT800480 	0
+#define DISPLAY_PANEL_AT070TN92 		1
 #define COLOR_DEPTH 16
 
 /*********************************************************************
@@ -90,7 +91,7 @@
 	#error "Error: DISPLAY_CONTROLLER not defined"
 #endif
 
-#if (DISPLAY_PANEL == TY700TFT800480)
+#if (DISPLAY_PANEL_TY700TFT800480 == 1)
 	/*********************************************************************
 	* Overview: Image orientation (can be 0, 90, 180, 270 degrees).
 	*********************************************************************/	
@@ -133,6 +134,48 @@
 	#define LCD_SPDAT	0
 	/* End of definition for DISPLAY_PANEL == TY700TFT800480 */
 
+#elif (DISPLAY_PANEL_AT070TN92 == 1)
+	/*********************************************************************
+	* Overview: Image orientation (can be 0, 90, 180, 270 degrees).
+	*********************************************************************/
+  	#define DISP_ORIENTATION    0
+	/*********************************************************************
+	* Overview: Panel Data Width (R,G,B) in (6,6,6)
+	*********************************************************************/
+	#define DISP_DATA_WIDTH                 18
+	/*********************************************************************
+	* Overview: Horizontal and vertical display resolution
+	*                  (from the glass datasheet).
+	*********************************************************************/
+	#define DISP_HOR_RESOLUTION 800
+	#define DISP_VER_RESOLUTION 480
+	/*********************************************************************
+	* Overview: Horizontal synchronization timing in pixels
+	*                  (from the glass datasheet).
+	*********************************************************************/
+	#define DISP_HOR_PULSE_WIDTH		1
+	#define DISP_HOR_BACK_PORCH			210
+	#define DISP_HOR_FRONT_PORCH		45
+	/*********************************************************************
+	* Overview: Vertical synchronization timing in lines
+	*                  (from the glass datasheet).
+	*********************************************************************/
+	#define DISP_VER_PULSE_WIDTH		1
+	#define DISP_VER_BACK_PORCH			34
+	#define DISP_VER_FRONT_PORCH		10
+	/*********************************************************************
+	* Definition for SPI interface for SSD1963
+	* Hardware dependent!
+	*********************************************************************/
+	#define GPIO3 3
+	#define GPIO2 2
+	#define GPIO1 1
+	#define GPIO0 0
+	#define LCD_RESET 	0
+	#define LCD_SPENA	0
+	#define LCD_SPCLK	0
+	#define LCD_SPDAT	0
+	/* End of definition for DISPLAY_PANEL == AT070TN92 */
 #else
 	#error "Graphics controller is not defined"
 #endif // DISPLAY_CONTROLLER == ABC

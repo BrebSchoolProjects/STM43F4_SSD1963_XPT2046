@@ -316,11 +316,6 @@ void LCD_DispPic_FullSize(const unsigned char *str)
 
 void LCD_DispPic(u16 x0, u16 y0, const unsigned char *str)
 {
-
-	u32 temp;
-    
-    u16 x1;
-    u16 y1;
     u16 imageWidth;
     u16 imageHeight;
     
@@ -329,19 +324,29 @@ void LCD_DispPic(u16 x0, u16 y0, const unsigned char *str)
     color.U8[1] =*(unsigned short *)(&str[ 0]);
 	color.U8[0]=*(unsigned short *)(&str[ 1]);
     imageWidth = color.U16;
-    x1 = imageWidth-1 + x0;
 
     color.U8[1] =*(unsigned short *)(&str[ 2]);
 	color.U8[0]=*(unsigned short *)(&str[ 3]);
     imageHeight = color.U16;
-    y1 = imageHeight-1 + y0;
-    
+
+    LCD_DispPicSize(x0, y0, imageWidth, imageHeight, str);
+}
+
+void LCD_DispPicSize(u16 x0, u16 y0, u16 width, u16 height, const unsigned char *str) {
+	u32 temp;
+    u16 x1;
+    u16 y1;
+    ColorTypeDef color;
+
+    x1 = width-1 + x0;
+    y1 = height-1 + y0;
+
 	LCD_SetArea(x0,y0,x1,y1);
 	LCD_WriteCommand(CMD_WR_MEMSTART);
 
 	Clr_Cs;    
 
-	for (temp = 2; temp < (imageWidth*imageHeight)+2; temp++)
+	for (temp = 2; temp < (width*height)+2; temp++)
 	{  
 		color.U8[1] =*(unsigned short *)(&str[ 2 * temp]);
 		color.U8[0]=*(unsigned short *)(&str[ 2 * temp+1]);

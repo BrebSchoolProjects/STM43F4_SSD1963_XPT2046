@@ -111,7 +111,7 @@ u16 _clipRight;
 u16 _clipBottom;
 
 // Active Page
-u8  _activePage;
+u8  _activePage = 0;
 // Visual Page
 u8  _visualPage;
 
@@ -135,7 +135,7 @@ void LCD_SetArea(u16 start_x, u16 start_y, u16 end_x, u16 end_y);
 *
 * Note: none
 ********************************************************************/
-void LCD_WriteCommand(uint16_t Cmd)
+inline void LCD_WriteCommand(uint16_t Cmd)
 {
    *(uint16_t *) (LCD_REG) = Cmd;
 }
@@ -154,7 +154,7 @@ void LCD_WriteCommand(uint16_t Cmd)
 * Overview:
 ********************************************************************/
 
-void LCD_WriteData(uint16_t data)
+inline void LCD_WriteData(uint16_t data)
 {
    *(uint16_t *) (LCD_DATA)= data;
 }
@@ -440,7 +440,7 @@ void LCD_ResetDevice(void)
 	LCD_Delay(10);
 
 	//Set LSHIFT freq, i.e. the DCLK with PLL freq 120MHz set previously
-	//Typical DCLK for TY700TFT800480 is 33.3MHz(datasheet), experiment shows 30MHz gives a stable result
+	//Typical DCLK for panel is 33.3MHz(datasheet), experiment shows 30MHz gives a stable result
 	//30MHz = 120MHz*(LCDC_FPR+1)/2^20
 	//LCDC_FPR = 262143 (0x3FFFF)
 	//Time per line = (DISP_HOR_RESOLUTION+DISP_HOR_PULSE_WIDTH+DISP_HOR_BACK_PORCH+DISP_HOR_FRONT_PORCH)/30 us = 1056/30 = 35.2us
@@ -456,8 +456,8 @@ void LCD_ResetDevice(void)
 	LCD_WriteCommand(0xB0);
 
 	Clr_Cs;
-	LCD_WriteData(0x10);				// set 18-bit for 7" panel TY700TFT800480
-	LCD_WriteData(0x80);				// set TTL mode
+	LCD_WriteData(0x10);				// set 18-bit for 7" panel
+	LCD_WriteData(0x00);				// set TTL mode
 	LCD_WriteData((DISP_HOR_RESOLUTION-1)>>8); //Set panel size
 	LCD_WriteData(DISP_HOR_RESOLUTION-1);
 	LCD_WriteData((DISP_VER_RESOLUTION-1)>>8);
@@ -495,17 +495,15 @@ void LCD_ResetDevice(void)
 	Set_Cs;
 	
 	//Set pixel format, i.e. the bpp
-	LCD_WriteCommand(0x3A);
-	Clr_Cs;
-	LCD_WriteData(0x55); 				// set 16bpp
-	Set_Cs;
+//	LCD_WriteCommand(0x3A);
+//	Clr_Cs;
+//	LCD_WriteData(0x55); 				// set 16bpp
+//	Set_Cs;
 
 	//Set pixel data interface
 	LCD_WriteCommand(0xF0);
 	Clr_Cs;
-	LCD_WriteData(0x03);				//16-bit(565 format) data for 16bpp PIC32MX only
-	/*LCD_WriteData(0x00);				//8-bit data for 16bpp, PIC24 series
-	Set_Cs;*/
+	LCD_WriteData(0x03);				//16-bit(565 format) data for 16bpp
 
 	LCD_WriteCommand(0x29);				// Turn on display; show the image on display	
 }

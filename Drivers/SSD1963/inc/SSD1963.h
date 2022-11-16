@@ -221,7 +221,7 @@ extern u8	_visualPage;
 *
 * Note: none
 ********************************************************************/
-inline void LCD_WriteCommand(uint16_t Cmd);
+void LCD_WriteCommand(uint16_t Cmd);
 
 /*********************************************************************
 * Function:  void  LCD_WriteData(WORD data)
@@ -236,7 +236,7 @@ inline void LCD_WriteCommand(uint16_t Cmd);
 *
 * Overview:
 ********************************************************************/
-inline void LCD_WriteData(uint16_t data);
+void LCD_WriteData(uint16_t data);
 
 void LCD_Clear(u16 color);
 

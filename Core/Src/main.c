@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "SSD1963_api.h"
+#include "SSD1963.h"
 #include "board.h"
 /* USER CODE END Includes */
 
@@ -125,24 +126,11 @@ int main(void)
   vTaskDelay(500 / portTICK_PERIOD_MS);
 
   LCD_ResetDevice();
-  LCD_Clear(RED);
+  LCD_Clear(BLACK);
   LCD_Circle(600, 100, 20, RED, true);
   LCD_Circle(600, 150, 20, GREEN, true);
   LCD_Circle(600, 200, 20, BLUE, true);
   LCD_Circle(650, 100, 20, WHITE, true);
-
-//  Init_SSD1963();
-//  for(uint32_t index_clr=0;index_clr < 800*480;index_clr++){
-//    Lcd_Write_Data(DARK_BLUE); 	//setbuf color pixel
-// 	}
-//  Lcd_ClearScreen(DARK_BLUE);
-//  for(uint32_t index_set=0;index_set < 400;index_set++){
-//    Lcd_SetPixel(index_set, index_set, GREEN);
-//  }
-//  TFT_Draw_Circle(600, 100, 20, 1, 1, RED);
-//  TFT_Draw_Circle(600, 150, 20, 1, 1, GREEN);
-//  TFT_Draw_Circle(600, 200, 20, 1, 1, BLUE);
-//  TFT_Draw_Circle(650, 100, 20, 1, 1, WHITE);
 //  while(1);
 
   /* USER CODE END 2 */
@@ -381,7 +369,7 @@ void StartDefaultTask(void *argument)
     osDelay(100 / portTICK_PERIOD_MS);
     touchgfxSignalVSync();
 
-    LCD_Circle(x, x, 10, RED, true);
+//    LCD_Circle(x, x, 10, RED, true);
     x++;
   }
   /* USER CODE END 5 */

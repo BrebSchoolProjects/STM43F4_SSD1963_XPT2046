@@ -16,15 +16,16 @@ int touchgfxDisplayDriverTransmitActive() {
 }
 
 void touchgfxDisplayDriverTransmitBlock(const uint8_t* pixels, uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-	uint16_t *data = (uint16_t *)pixels;
-	for (int j = y; j < y+h; j++) {
-		for (int i = x; i < x+w; i++) {
-			//uint16_t data = *pixels | (*(pixels+1) << 8);
-			LCD_PutPixel(i, j, *data);
-			data++;
-
-		}
-	}
+	LCD_DispPicSize(x, y, w, h, pixels);
+//	uint16_t *data = (uint16_t *)pixels;
+//	for (int j = y; j < y+h; j++) {
+//		for (int i = x; i < x+w; i++) {
+//			//uint16_t data = *pixels | (*(pixels+1) << 8);
+//			LCD_PutPixel(i, j, *data);
+//			data++;
+//
+//		}
+//	}
 //	touchgfxSignalVSync();
 	DisplayDriver_TransferCompleteCallback();
 //	touchgfx::startNewTransfer();
