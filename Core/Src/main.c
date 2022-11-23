@@ -163,20 +163,20 @@ int main(void)
   // set up touch controller
   xpt2046_init();
   xpt2046_spi(&hspi5);
-  xpt2046_orientation(XPT2046_ORIENTATION_LANDSCAPE);
+  xpt2046_orientation(XPT2046_ORIENTATION_LANDSCAPE_NOMIRROR);
   xpt2046_set_size(800, 480);
 
   // test touch
-  char str[100];
-  while(1) {
-	  HAL_Delay(100);
-	  uint16_t x, y;
-	  xpt2046_read_position(&x, &y);
-	  if (x != 0 && y != 0) {
-		  int len = snprintf(str, 100, "%d, %d            ", x, y);
-		  LCD_Text(0, 300, str, len, WHITE, BLACK);
-	  }
-  }
+//  char str[100];
+//  while(1) {
+//	  HAL_Delay(100);
+//	  uint16_t x, y;
+//	  xpt2046_read_position(&x, &y);
+//	  if (x != 0 && y != 0) {
+//		  int len = snprintf(str, 100, "%d, %d            ", x, y);
+//		  LCD_Text(0, 300, str, len, WHITE, BLACK);
+//	  }
+//  }
 
   /* USER CODE END 2 */
 

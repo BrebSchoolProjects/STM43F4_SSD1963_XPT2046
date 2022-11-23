@@ -265,6 +265,13 @@ void xpt2046_update(){
 			ts_Coordinates.z = ts_CoordinatesRaw.z1;
 			break;
 		}
+		case XPT2046_ORIENTATION_LANDSCAPE_NOMIRROR:
+		{
+			ts_Coordinates.x = (ts_Size.width * (ts_CoordinatesRaw.x))/max - XPT2046_X_OFFSET;
+			ts_Coordinates.y = (ts_Size.height * (ts_CoordinatesRaw.y))/max - XPT2046_Y_OFFSET;
+			ts_Coordinates.z = ts_CoordinatesRaw.z1;
+			break;
+		}
 		default:
 		{
 			break;
