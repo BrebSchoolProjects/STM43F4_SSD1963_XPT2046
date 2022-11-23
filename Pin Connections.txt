@@ -1,0 +1,48 @@
+/*-- GPIOs Configuration -----------------------------------------------------*/
+/*
+ +-------------------+--------------------+------------------+------------------+
+ +                       SRAM pins assignment                                   +
+ +-------------------+--------------------+------------------+------------------+
+ | PD0  <-> FSMC_D2            orange
+ | PD1  <-> FSMC_D3            red
+ | PD4  <-> FSMC_NOE (RD)      blue
+ | PD5  <-> FSMC_NWE (WR)      lila
+   PD7  <-> FSMC_NE1 (CS)      red
+ | PD8  <-> FSMC_D13           red
+ | PD9  <-> FSMC_D14           brown
+ | PD10 <-> FSMC_D15           orange
+ | PD11 <-> FSMC_A16 (RS)      grey
+ | PD14 <-> FSMC_D0            green
+ | PD15 <-> FSMC_D1            yellow
+
+ | PE7  <-> FSMC_D4            brown
+ | PE8  <-> FSMC_D5            black
+ | PE9  <-> FSMC_D6            white
+ | PE10 <-> FSMC_D7            grey
+ | PE11 <-> FSMC_D8            lila
+ | PE12 <-> FSMC_D9            blue
+ | PE13 <-> FSMC_D10           green
+ | PE14 <-> FSMC_D11           yellow
+ | PE15 <-> FSMC_D12           orange
+
+
+ | 3V3                          white
+ | GND                          black
+ | 5V                           yellow
+ | LED_A  <-> 3v3               green (should be a pwm signal)
+ | RST    <-> PC13              orange
+
+
+
+ | PF7  <-> SPI5_SCK            blue
+ | PF8  <-> SPI5_MISO           white
+ | PF9  <-> SPI5_MOSI           grey
+ | PA5  <-> SPI CS for touch    lila
+
+
+
+
+
+
+
+
