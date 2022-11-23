@@ -30,7 +30,11 @@ from Original source:
  * THE SOFTWARE.
  */
 
+#include <stdint.h>
+
 #include "xpt2046.h"
+#include "main.h"
+#include "stm32f4xx_hal.h"
 
 #define T_IRQ XPT2046_ReadIRQ()
 #define T_CS_ON XPT2046_SetCS()
@@ -43,7 +47,7 @@ from Original source:
 #define Z_THRESHOLD_INT	75
 #define MSEC_THRESHOLD  3
 
-extern SPI_HandleTypeDef hspi2;
+extern SPI_HandleTypeDef hspi5;
 extern void Error_Handler(void);
 static uint8_t XPT2046_initilazed = 0;
 
@@ -59,29 +63,29 @@ static void XPT2046_ResetCS(void)
 
 static void XPT2046_Write_Byte(uint8_t num)
 {
-	hspi2.Instance->CR2 &= ~(SPI_DATASIZE_16BIT); // Set 8 bit mode
-	__HAL_SPI_ENABLE(&hspi2);
-	if (HAL_SPI_Transmit(&hspi2, &num, 1, 1000) != HAL_OK) {
+	hspi5.Instance->CR2 &= ~(SPI_DATASIZE_16BIT); // Set 8 bit mode
+	__HAL_SPI_ENABLE(&hspi5);
+	if (HAL_SPI_Transmit(&hspi5, &num, 1, 1000) != HAL_OK) {
 		Error_Handler();
 	}
-	__HAL_SPI_DISABLE(&hspi2);
+	__HAL_SPI_DISABLE(&hspi5);
 }
 
 static uint16_t XPT2046_Read_AD(uint8_t CMD)
 {
-	uint8_t num[2];
+	uint8_t num[2] = {0};
 	uint16_t ret;
 
 	T_CS_OFF;
 	XPT2046_Write_Byte(CMD);
 	HAL_Delay(6);
 
-	hspi2.Instance->CR2 |= SPI_DATASIZE_16BIT; // Set 16 bit mode
-	__HAL_SPI_ENABLE(&hspi2);
-	if (HAL_SPI_Receive(&hspi2, num, 1, 1000) != HAL_OK) {
+	hspi5.Instance->CR2 |= SPI_DATASIZE_16BIT; // Set 16 bit mode
+	__HAL_SPI_ENABLE(&hspi5);
+	if (HAL_SPI_Receive(&hspi5, num, 1, 1000) != HAL_OK) {
 		Error_Handler();
 	}
-	__HAL_SPI_DISABLE(&hspi2);
+	__HAL_SPI_DISABLE(&hspi5);
 	T_CS_ON;
 
 	ret = num[0] << 8 | num[1];

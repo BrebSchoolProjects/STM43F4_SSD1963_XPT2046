@@ -36,8 +36,6 @@ SOFTWARE.
  extern "C" {
 #endif
 
-#include "main.h"
-
 #define TP_PRES_DOWN 0x80
 #define TP_CATH_PRES 0x40
 #define CMD_RDX 0xD0
