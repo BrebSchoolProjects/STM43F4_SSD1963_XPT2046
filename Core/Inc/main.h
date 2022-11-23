@@ -61,8 +61,10 @@ void Error_Handler(void);
 #define DisplayReset_GPIO_Port GPIOC
 #define UserButton_Pin GPIO_PIN_0
 #define UserButton_GPIO_Port GPIOA
-#define T_CS_Pin GPIO_PIN_5
-#define T_CS_GPIO_Port GPIOA
+#define TC_PEN_Pin GPIO_PIN_4
+#define TC_PEN_GPIO_Port GPIOA
+#define TOUCH_CS_Pin GPIO_PIN_5
+#define TOUCH_CS_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

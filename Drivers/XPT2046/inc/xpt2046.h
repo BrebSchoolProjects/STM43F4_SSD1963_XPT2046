@@ -1,58 +1,163 @@
 /*
- * touch.h
+ * Touch Screen Driver Library for HR2046 Controller
+ * Based on :
+ * https://github.com/PaulStoffregen/XPT2046_Touchscreen
+ * Thanks for the help
+ * To use it set the peirq pin with name TC_PEN
  *
- *  Created on: Jan 6, 2020
- *      Author: Kotetsu Yamamoto
- *      Copyright [Kotetsu Yamamoto]
+ * All the code was based on the next driver:
+ * https://ldm-systems.ru/f/doc/catalog/HY-TFT-2,8/XPT2046.pdf
+ * This assumes the next structure of control byte:
+ * [S | A2 | A1 | A0 | MODE | SR/DF | PD1 | PD0 ]
+ * */
 
-MIT License
-
-Copyright (c) 2020 Kotestu Yamamoto
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
- */
-
-#ifndef INC_TOUCH_H_
-#define INC_TOUCH_H_
+#ifndef XPT2046_H
+#define XPT2046_H
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
-#define TP_PRES_DOWN 0x80
-#define TP_CATH_PRES 0x40
-#define CMD_RDX 0xD0
-#define CMD_RDY 0x90
-#define XPT_XMIN 350
-#define XPT_YMIN 350
-#define XPT_XMAX 3800
-#define XPT_YMAX 3600
-#define XPT_WIDTH (XPT_XMAX - XPT_XMIN)
-#define XPT_HEIGHT (XPT_YMAX - XPT_YMIN)
+#include "main.h"
+#include "stm32f4xx_hal_spi.h"
+#include "stm32f4xx_hal_gpio.h"
 
-void XPT2046_Init(void);
-void XPT2046_Update(uint16_t *x, uint16_t *y);
-uint8_t XPT2046_IsReasonable(uint16_t x, uint16_t y);
+#define XPT2046_START_BIT  	(0x01 << 7)
+#define XPT2046_A2_ENABLE  	0x01 << 6
+#define XPT2046_A1_ENABLE  	0x01 << 5
+#define XPT2046_A0_ENABLE  	0x01 << 4
+#define XPT2046_MODE_8BIT  	0x01 << 3
+#define XPT2046_MODE_SER	0x01 << 2
+#define XPT2046_PD1_ENABLE	0x01 << 1
+#define XPT2046_PD0_ENABLE	0x01 << 0
+
+
+#define AVERAGE_POINTS			10
+#define Z_THRESHOLD_12BIT		40
+#define Z_THRESHOLD_08BIT		7
+
+#define XPT2046_X_OFFSET 		10
+#define XPT2046_Y_OFFSET		0
+
+#define XPT2046_WIDTH			240
+#define XPT2046_HEIGHT			320
+/* This pins must be defined as in your project */
+
+#define XPT2046_CS_Port 		TOUCH_CS_GPIO_Port
+#define XPT2046_CS_Pin			TOUCH_CS_Pin
+#define XPT2046_PENIRQ_Port 	TC_PEN_GPIO_Port
+#define XPT2046_PENIRQ_Pin 		TC_PEN_Pin
+
+typedef enum pressedModes {
+	XPT2046_NOT_PRESSED = 0,
+	XPT2046_PRESSED = 1
+}XPT2046_PressedModes;
+typedef enum powerModes{
+	XPT2046_POWER_DOWN			 	= 0x00,
+	XPT2046_REFERENCE_OFF_ADC_ON 	= XPT2046_PD0_ENABLE,
+	XPT2046_REFERENCE_ON_ADC_OFF 	= XPT2046_PD1_ENABLE,
+	XPT2046_DEVICE_ALWAYS_ON 		= XPT2046_PD1_ENABLE | XPT2046_PD0_ENABLE
+}XPT2046_PowerModes;
+
+typedef enum referenceModes{
+	XPT2046_DFR_MODE 				= 0,
+	XPT2046_SER_MODE 				= XPT2046_MODE_SER
+}XPT2046_ReferenceModes;
+
+typedef enum channelModes{
+	XPT2046_SER_TEMP0 			= 0,
+	XPT2046_SER_Y				= XPT2046_A0_ENABLE,
+	XPT2046_SER_VBAT 			= XPT2046_A1_ENABLE,
+	XPT2046_SER_Z1	 			= XPT2046_A1_ENABLE | XPT2046_A0_ENABLE,
+	XPT2046_SER_Z2				= XPT2046_A2_ENABLE,
+	XPT2046_SER_X				= XPT2046_A2_ENABLE |XPT2046_A0_ENABLE ,
+	XPT2046_SER_AUXIN 			= XPT2046_A2_ENABLE|XPT2046_A1_ENABLE,
+	XPT2046_SER_TEMP1 			= XPT2046_A2_ENABLE|XPT2046_A1_ENABLE|XPT2046_A0_ENABLE,
+	XPT2046_DFR_Y		 		= XPT2046_A0_ENABLE,
+	XPT2046_DFR_Z1		 		= XPT2046_A1_ENABLE | XPT2046_A0_ENABLE,
+	XPT2046_DFR_Z2		 		= XPT2046_A2_ENABLE,
+	XPT2046_DFR_X		 		= XPT2046_A2_ENABLE |XPT2046_A0_ENABLE
+}XPT2046_ChannelModes;
+
+typedef enum bitModes {
+	XPT2046_12BIT_MODE 			= 0,
+	XPT2046_8BIT_MODE 			= XPT2046_MODE_8BIT
+}XPT2046_BitModes;
+
+typedef enum startBits {
+	XPT2046_NONE			= 0,
+	XPT2046_START 			= XPT2046_START_BIT
+}XPT2046_StartModes;
+
+
+typedef struct {
+	uint8_t startBit;
+	uint8_t channel;
+	uint8_t  bitMode;
+	uint8_t reference;
+	uint8_t powerMode;
+}TouchScreen_ControlByte;
+
+/* This are the same values as the ili9341 library*/
+typedef enum
+{
+	XPT2046_ORIENTATION_PORTRAIT 			= 0,
+	XPT2046_ORIENTATION_LANDSCAPE 			= 1,
+	XPT2046_ORIENTATION_PORTRAIT_MIRROR 	= 2,
+	XPT2046_ORIENTATION_LANDSCAPE_MIRROR 	= 3
+}TouchScreen_OrientationTypeDef;
+
+/*
+ * Touch Screen Coordinates Point
+ * */
+typedef struct
+{
+	uint16_t x;
+	uint16_t y;
+	uint16_t z1;
+	uint16_t z2;
+}TouchScreen_CoordinatesRaw;
+
+typedef struct
+{
+	uint16_t x;
+	uint16_t y;
+	uint16_t z;
+}TouchScreen_Coordinates;
+
+typedef struct
+{
+	uint16_t width;
+	uint16_t height;
+} TouchScreen_Size;
+
+
+
+uint8_t xtp_compare_cords(uint16_t x, uint16_t y , uint16_t z, TouchScreen_Coordinates tsc);
+uint8_t xtp_compare_tsc(TouchScreen_Coordinates c, TouchScreen_Coordinates tsc);
+void xpt2046_control_byte_update();
+uint16_t xpt2046_max_measurement();
+uint16_t xpt2046_zthreshold();
+void xpt2046_set_size(uint16_t w, uint16_t h);
+void xpt2046_spi(SPI_HandleTypeDef* spi);
+void xpt2046_cs(GPIO_TypeDef* cs_port, uint16_t cs_pin);
+void xpt2046_penirq(GPIO_TypeDef* penirq_port, uint16_t penirq_pin);
+void xpt2046_orientation(TouchScreen_OrientationTypeDef orientation_);
+void xpt2046_init();
+void xpt2046_power_mode(uint8_t p);
+void xpt2046_reference(uint8_t r);
+void xpt2046_bit_mode(uint8_t b);
+void xpt2046_channel(uint8_t c);
+void xpt2046_update();
+void xpt2046_select();
+void xpt2046_unselect();
+uint8_t xpt2046_interruptions_activated();
+uint8_t xpt2046_interrupt();
+uint8_t xpt2046_pressed();
+void xpt2046_read_position(uint16_t* x, uint16_t* y);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* INC_TOUCH_H_ */
+#endif

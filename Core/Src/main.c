@@ -161,7 +161,22 @@ int main(void)
 //}
 
   // set up touch controller
-  XPT2046_Init();
+  xpt2046_init();
+  xpt2046_spi(&hspi5);
+  xpt2046_orientation(XPT2046_ORIENTATION_LANDSCAPE);
+  xpt2046_set_size(800, 480);
+
+  // test touch
+  char str[100];
+  while(1) {
+	  HAL_Delay(100);
+	  uint16_t x, y;
+	  xpt2046_read_position(&x, &y);
+	  if (x != 0 && y != 0) {
+		  int len = snprintf(str, 100, "%d, %d            ", x, y);
+		  LCD_Text(0, 300, str, len, WHITE, BLACK);
+	  }
+  }
 
   /* USER CODE END 2 */
 
@@ -309,11 +324,11 @@ static void MX_SPI5_Init(void)
   hspi5.Instance = SPI5;
   hspi5.Init.Mode = SPI_MODE_MASTER;
   hspi5.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi5.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi5.Init.DataSize = SPI_DATASIZE_16BIT;
   hspi5.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi5.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi5.Init.NSS = SPI_NSS_SOFT;
-  hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+  hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
   hspi5.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi5.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi5.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -403,7 +418,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(DisplayReset_GPIO_Port, DisplayReset_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(T_CS_GPIO_Port, T_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(TOUCH_CS_GPIO_Port, TOUCH_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : DisplayReset_Pin */
   GPIO_InitStruct.Pin = DisplayReset_Pin;
@@ -412,18 +427,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(DisplayReset_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : UserButton_Pin */
-  GPIO_InitStruct.Pin = UserButton_Pin;
+  /*Configure GPIO pins : UserButton_Pin TC_PEN_Pin */
+  GPIO_InitStruct.Pin = UserButton_Pin|TC_PEN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(UserButton_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : T_CS_Pin */
-  GPIO_InitStruct.Pin = T_CS_Pin;
+  /*Configure GPIO pin : TOUCH_CS_Pin */
+  GPIO_InitStruct.Pin = TOUCH_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(T_CS_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(TOUCH_CS_GPIO_Port, &GPIO_InitStruct);
 
 }
 
