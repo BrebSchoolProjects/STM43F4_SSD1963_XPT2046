@@ -4,10 +4,12 @@
 #include <gui_generated/screen_screen/screenViewBase.hpp>
 #include <touchgfx/Color.hpp>
 #include <BitmapDatabase.hpp>
+#include <texts/TextKeysAndLanguages.hpp>
 #include <touchgfx/canvas_widget_renderer/CanvasWidgetRenderer.hpp>
 
 
-screenViewBase::screenViewBase()
+screenViewBase::screenViewBase() :
+    buttonCallback(this, &screenViewBase::buttonCallbackHandler)
 {
 
     touchgfx::CanvasWidgetRenderer::setupBuffer(canvasBuffer, CANVAS_BUFFER_SIZE);
@@ -17,6 +19,7 @@ screenViewBase::screenViewBase()
 
     button1.setXY(100, 83);
     button1.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_PRESSED_ID));
+    button1.setAction(buttonCallback);
 
     circle1.setPosition(111, 174, 80, 80);
     circle1.setCenter(40, 40);
@@ -42,14 +45,42 @@ screenViewBase::screenViewBase()
     circle1_2Painter.setColor(touchgfx::Color::getColorFromRGB(0, 0, 255));
     circle1_2.setPainter(circle1_2Painter);
 
+    buttonWithLabel1.setXY(303, 83);
+    buttonWithLabel1.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_PRESSED_ID));
+    buttonWithLabel1.setLabelText(touchgfx::TypedText(T___SINGLEUSE_VUAC));
+    buttonWithLabel1.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    buttonWithLabel1.setLabelColorPressed(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    buttonWithLabel1.setAction(buttonCallback);
+
     add(__background);
     add(button1);
     add(circle1);
     add(circle1_1);
     add(circle1_2);
+    add(buttonWithLabel1);
 }
 
 void screenViewBase::setupScreen()
 {
 
+}
+
+void screenViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& src)
+{
+    if (&src == &button1)
+    {
+        //Interaction1
+        //When button1 clicked hide circle1_2
+        //Hide circle1_2
+        circle1_2.setVisible(false);
+        circle1_2.invalidate();
+    }
+    else if (&src == &buttonWithLabel1)
+    {
+        //Interaction2
+        //When buttonWithLabel1 clicked show circle1_2
+        //Show circle1_2
+        circle1_2.setVisible(true);
+        circle1_2.invalidate();
+    }
 }
