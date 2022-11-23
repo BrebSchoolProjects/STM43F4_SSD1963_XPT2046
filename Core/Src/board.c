@@ -12,14 +12,22 @@
 void setupDefaultGpios(void) {
 	// PB5 -> disable on board SDRAM
 	__HAL_RCC_GPIOB_CLK_ENABLE();
-	GPIO_InitTypeDef pb5;
-	pb5.Alternate = 0;
-	pb5.Mode = GPIO_MODE_OUTPUT_PP;
-	pb5.Pin = GPIO_PIN_5;
-	pb5.Pull = GPIO_NOPULL;
-	pb5.Speed = GPIO_SPEED_MEDIUM;
-	HAL_GPIO_Init(GPIOB, &pb5);
+	GPIO_InitTypeDef pin;
+	pin.Alternate = 0;
+	pin.Mode = GPIO_MODE_OUTPUT_PP;
+	pin.Pin = GPIO_PIN_5;
+	pin.Pull = GPIO_NOPULL;
+	pin.Speed = GPIO_SPEED_MEDIUM;
+	HAL_GPIO_Init(GPIOB, &pin);
 
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+
+	// PC1 -> disable L3GD20 on SPI
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+	pin.Pin = GPIO_PIN_1;
+	HAL_GPIO_Init(GPIOC, &pin);
+
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
+
 }
 
